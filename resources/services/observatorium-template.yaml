@@ -164,6 +164,7 @@ objects:
           - --ams.mappings=dptp=${DPTP_ORGANIZATION_ID}
           - --ams.mappings=managedkafka=${MANAGEDKAFKA_ORGANIZATION_ID}
           - --ams.mappings=osd=${OSD_ORGANIZATION_ID}
+          - --internal.tracing.endpoint=localhost:6831
           env:
           - name: ISSUER_URL
             valueFrom:
@@ -543,6 +544,8 @@ objects:
 - apiVersion: monitoring.coreos.com/v1
   kind: ServiceMonitor
   metadata:
+    labels:
+      prometheus: app-sre
     name: observatorium-api-cache-memcached
   spec:
     endpoints:
@@ -715,7 +718,7 @@ objects:
           - --log.level=debug
           - --endpoint-type=metrics
           - --queries-file=/etc/up/queries.yaml
-          - --endpoint-read=http://observatorium-thanos-query-frontend.${NAMESPACE}.svc:9090/api/v1/query
+          - --endpoint-read=http://observatorium-thanos-query-frontend.${OBSERVATORIUM_METRICS_NAMESPACE}.svc:9090/api/v1/query
           image: quay.io/observatorium/up:master-2020-06-15-d763595
           name: observatorium-up
           ports:

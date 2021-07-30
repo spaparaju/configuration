@@ -125,6 +125,12 @@ local memcached = (import 'github.com/observatorium/observatorium/configuration/
     },
   }) {
     serviceMonitor+: {
+      metadata+: {
+        labels+: {
+          prometheus: 'app-sre',
+          'app.kubernetes.io/version':: 'hidden',
+        },
+      },
       spec+: {
         namespaceSelector: {
           // NOTICE:
@@ -262,6 +268,11 @@ local memcached = (import 'github.com/observatorium/observatorium/configuration/
           memory: '${OPA_AMS_MEMORY_LIMIT}',
         },
       },
+      internal: {
+        tracing: {
+          endpoint: 'localhost:6831',
+        },
+      },
     }),
 
     // proxySecret: oauth.proxySecret,
@@ -316,7 +327,7 @@ local memcached = (import 'github.com/observatorium/observatorium/configuration/
     image: 'quay.io/observatorium/up:' + cfg.version,
     replicas: 1,
     endpointType: 'metrics',
-    readEndpoint: 'http://%s.%s.svc:9090/api/v1/query' % [obs.thanos.queryFrontend.service.metadata.name, obs.thanos.queryFrontend.service.metadata.namespace],
+    readEndpoint: 'http://%s.%s.svc:9090/api/v1/query' % [obs.thanos.queryFrontend.service.metadata.name, obs.config.namespaces.metrics],
     queryConfig: (import '../configuration/observatorium/queries.libsonnet'),
     serviceMonitor: true,
     resources: {

@@ -141,6 +141,11 @@ objects:
           - --whitelist={__name__="csv_abnormal"}
           - --whitelist={__name__="csv_succeeded"}
           - --whitelist={__name__="insightsclient_request_send_total"}
+          - --whitelist={__name__="instance:etcd_disk_backend_commit_duration_seconds:histogram_quantile",quantile="0.99"}
+          - --whitelist={__name__="instance:etcd_disk_wal_fsync_duration_seconds:histogram_quantile",quantile="0.99"}
+          - --whitelist={__name__="instance:etcd_mvcc_db_total_size_in_bytes:sum"}
+          - --whitelist={__name__="instance:etcd_mvcc_db_total_size_in_use_in_bytes:sum"}
+          - --whitelist={__name__="instance:etcd_network_peer_round_trip_time_seconds:histogram_quantile",quantile="0.99"}
           - --whitelist={__name__="instance:etcd_object_counts:sum"}
           - --whitelist={__name__="job:ceph_osd_metadata:count"}
           - --whitelist={__name__="job:ceph_pools_iops:total"}
@@ -317,6 +322,11 @@ objects:
           - --whitelist={__name__="csv_abnormal"}
           - --whitelist={__name__="csv_succeeded"}
           - --whitelist={__name__="insightsclient_request_send_total"}
+          - --whitelist={__name__="instance:etcd_disk_backend_commit_duration_seconds:histogram_quantile",quantile="0.99"}
+          - --whitelist={__name__="instance:etcd_disk_wal_fsync_duration_seconds:histogram_quantile",quantile="0.99"}
+          - --whitelist={__name__="instance:etcd_mvcc_db_total_size_in_bytes:sum"}
+          - --whitelist={__name__="instance:etcd_mvcc_db_total_size_in_use_in_bytes:sum"}
+          - --whitelist={__name__="instance:etcd_network_peer_round_trip_time_seconds:histogram_quantile",quantile="0.99"}
           - --whitelist={__name__="instance:etcd_object_counts:sum"}
           - --whitelist={__name__="job:ceph_osd_metadata:count"}
           - --whitelist={__name__="job:ceph_pools_iops:total"}
@@ -532,7 +542,7 @@ objects:
 
           location / {
             proxy_set_header THANOS-TENANT FB870BF3-9F3A-44FF-9BF7-D7A047A52F43;
-            proxy_pass http://${PROMETHEUS_AMS_REMOTE_WRITE_PROXY_TARGET}.${NAMESPACE}.svc.cluster.local:19291;
+            proxy_pass http://${PROMETHEUS_AMS_REMOTE_WRITE_PROXY_TARGET}.${OBSERVATORIUM_METRICS_NAMESPACE}.svc.cluster.local:19291;
           }
         }
       }
@@ -816,6 +826,8 @@ parameters:
   value: 200Mi
 - name: OBSERVATORIUM_NAMESPACE
   value: observatorium
+- name: OBSERVATORIUM_METRICS_NAMESPACE
+  value: observatorium-metrics
 - name: PROMETHEUS_AMS_REMOTE_WRITE_PROXY_IMAGE
   value: quay.io/app-sre/observatorium-receive-proxy
 - name: PROMETHEUS_AMS_REMOTE_WRITE_PROXY_TARGET
